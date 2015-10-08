@@ -75,5 +75,12 @@ class Gestion_Ligne_Commande {
                           ]); 
     }
     
+    public function getTVAs($idcommande) {
+        $sql ="SELECT tb_tva.id_tva, t_taux FROM tb_ligne_commande"
+                . "JOIN tb_article ON tb_ligne_commande.id_article = tb_article.id_article"
+                . "JOIN tb_tva ON tb_article.id_tva = tb_article.id_tva"
+                . "WHERE tb_ligne_commande.id_commande = 12";
+    }
+    
     
 }
