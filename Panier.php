@@ -103,6 +103,11 @@ class Panier {
             
             }
         $htmlOutput .= '<li>TOTAL HT : '.$total.' €</li>
+                        <li>------------------------</li>                        
+                        
+                        '.$this->nbArticleParTVA($id_commande).'
+                            
+                        <li>------------------------</li>
                         <li>TOTAL TTC : '.$totalTtc.' €</li>
                         <form action="" method="post">
                         <li><input type="submit" name="validerCommande" value="valider la commande" /></li>
@@ -113,7 +118,34 @@ class Panier {
     }
     
     
-    
+    public function nbArticleParTVA($id_commande) {
+        $htmlOutPut = '';
+        $managerL = new Gestion_Ligne_Commande();
+        $lesTVAs[] = $managerL->getTVAs($id_commande);
+        foreach ($lesTVAs as $tva) {
+            
+            foreach ($tva as $value) {
+                
+               $idTva = $value['id_tva'];
+               $taux = $value['t_taux'];
+               $nbArticletab = $managerL->countArtByTVA($id_commande, $idTva);
+               $nbarticle = $nbArticletab['nbarticle'];
+               $nbarticle;
+               $htmlOutPut .='<li>'.$nbarticle.' article(s) à '.$taux.'%</li>';
+            }
+            
+        }
+         return $htmlOutPut;      
+    }
+        
+        
+            
+
 }
+
+    
+    
+    
+
 
 

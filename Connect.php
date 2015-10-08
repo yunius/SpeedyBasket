@@ -43,4 +43,7 @@ class Connect {
         return $this->PDOinstance->exec($exec);
     }
     
+    public function execute($execute) {
+        return $this->PDOinstance->execute($execute);
+    }
 }
