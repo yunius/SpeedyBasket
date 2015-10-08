@@ -1,0 +1,77 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 1 oct. 2015, 15:51:59
+    Author     : gilou
+*/
+
+tr {
+    border-top: solid #cecdcd 1px;
+   
+}
+
+table {
+     border-collapse: collapse;
+     max-width: 70vw;
+}
+
+.panier ul {
+    margin:0;
+    padding: 0;
+    position: fixed;
+    //width: 25vw;
+    width: 17%;
+    right: 2vw;
+    top: 5vh;
+    background-color: #dad9d9;
+}
+.panier ul li {
+    list-style: none;
+    margin: 5px;
+}
+
+body {
+    background-color: #e1e0e0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 80%;
+}
+
+th:first-letter {
+    text-transform : capitalize;
+}
+
+td:first-letter {
+    text-transform : capitalize;
+}
+
+th{
+    width: 17%;
+    text-align: center;
+}
+
+td{
+    width: 17%;
+    text-align: center;
+}
+
+.aff_prod {
+    width: 60%;
+    background: white;
+    margin: auto;
+}
+
+.img_prod {
+    
+    width: 30%;
+}
+
+input[type=number] { 
+    width:40px;
+}
+
+.pan_article {
+    border-bottom: solid 1px white
+}
