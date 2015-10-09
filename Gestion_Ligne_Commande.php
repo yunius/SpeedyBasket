@@ -75,5 +75,23 @@ class Gestion_Ligne_Commande {
                           ]); 
     }
     
+    public function gestionArticle($idcommande) {
+       
+        $sql = "SELECT COUNT(tb_ligne_commande.id_article) AS nbLigne
+                FROM tb_ligne_commande 
+                JOIN tb_article ON tb_ligne_commande.id_article=tb_article.id_article 
+                JOIN tb_tva  ON tb_tva.id_tva=tb_article.id_tva 
+                WHERE id_commande = :id_commande";
+        
+        $requete = Connect::getInstance()->prepare($sql);
+        $requete->execute([':id_commande' => $idcommande,
+                            ]);
+        
+        $result = $requete->fetch(PDO::FETCH_ASSOC);
+        return $result['nbLigne'];
+        
+       
+    }
+    
     
 }

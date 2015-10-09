@@ -13,13 +13,33 @@
  */
 class Panier {
     
+  /*  public function nbArtTva(Commande $commande) {
+        $gestionnairecom = new Gestion_Commande();
+        $gestionnairecom->getCommande($commande);
+        
+        $nblcomm = $gestionnairecom->gestionTva($idcommande);
+        
+        return $nblcomm;
+        
+        
+    }*/
+    
+    public function partTva($totalHt, $totalTtc){
+        $part = $totalTtc-$totalHt;
+        return $part;
+        
+    }
+
     public function calculTva(Article $article) {
+        // recuperation du taux tva par article
         $gestionnaire = new Gestion_Articles();
         $prixHt = $article->getA_pht();
         $tva = $gestionnaire->getTva($article);
         
+        //calcul du prix ttc à partir du prix ht
         //$aPrixTtc = $prixHt*(1+(20.00/100));
         $aPrixTtc = $prixHt*(1+($tva/100));
+        $aPrixTtc = number_format($aPrixTtc, 2, '.', '');
         
         return $aPrixTtc;
     
@@ -35,9 +55,8 @@ class Panier {
             return false;
         }
     }
-    
-    
-    
+
+
     public function afficherArticles() {
         
         
@@ -55,8 +74,9 @@ class Panier {
                 $idTva = $managerA->getTva($value);
                 $aPrixTtc = $this->calculTva($value);
                 
-                if($aQteStock > 0) {
-                    $htmlOutput .= utf8_encode( "<form action='' method='post'>
+            
+            if($aQteStock > 0) {    
+                $htmlOutput .= utf8_encode( "<form action='' method='post'>
                                             <tr>
                                                 <td><img src='ressources/$urlImage' class='img_prod' /></td>
                                                 <td>$aDesignation</td>
@@ -71,8 +91,7 @@ class Panier {
                                             </tr>
                                             </form>
                                             ");
-                }
-                
+            }
                 
         }        
         return $htmlOutput;
@@ -83,27 +102,33 @@ class Panier {
         
         $managerL = new Gestion_Ligne_Commande();
         $managerA = new Gestion_Articles();
-        $htmlOutput = '<img src="ressources/panier.png" />';
-        $total = 0;
+        $htmlOutput = '<img src="ressources/panier.png" class="icn_pan" />';
+        $totalHt = 0;
         $totalTtc = 0;
         $liste = $managerL->getLigneCommandes($id_commande);
+        $nbArt = $managerL->gestionArticle($id_commande);
         foreach ($liste as $lignecommande) {
             $qte = $lignecommande->getQte_Cmde();
             $idArticle = $lignecommande->getId_Article();
             $monArticle = $managerA->getArticle($idArticle);
             $aPrixTtc = $this->calculTva($monArticle);
-            $htmlOutput .= '<form action="" method="post"><li> '.$monArticle->getA_designation().'     prix :'.$aPrixTtc.' € TTC</li><input type="hidden" name="idArticle" value="'.$lignecommande->getId_Article().'" />'
+            $aQteStock = $monArticle->getA_quantite_stock();
+            $htmlOutput .= '<form action="" method="post"><div class="artPan"> <li> '.$monArticle->getA_designation().'    :   '.$aPrixTtc.' €</li>'
+                    . '<input type="hidden" name="idArticle" value="'.$lignecommande->getId_Article().'" />'
                     . '<input type="hidden" name="idCommande" value="'.$lignecommande->getId_Commande().'" />'
-                    . '<input type="number" name="qteLCommande" value="'.$qte.'" />'
+                    . '<input type="number" name="qteLCommande" value="'.$qte.'" min="1" max="'.$aQteStock.'" />'
                     . '<input type="submit" name="updLCommande" value="modifier" />'
                     . '<input type="submit" name="supprimerLCommande" value="X" />'
-                    . '</form><br />';
-            $total +=($monArticle->getA_pht()*$qte);
+                    . '</div></form><br />';
+            $totalHt +=($monArticle->getA_pht()*$qte);
             $totalTtc +=($aPrixTtc*$qte);
             
             }
-        $htmlOutput .= '<li>TOTAL HT : '.$total.' €</li>
-                        <li>TOTAL TTC : '.$totalTtc.' €</li>
+             $part = $this->partTva($totalHt, $totalTtc);
+        $htmlOutput .= '<li>NB LIGNE : '.$nbArt.' </li>'
+                . '     <li>TOTAL HT : '.$totalHt.' €</li>
+                        <li>PART TAXE : '.$part.' €</li>
+                        <li class="tt">TOTAL TTC : '.$totalTtc.' €</li>
                         <form action="" method="post">
                         <li><input type="submit" name="validerCommande" value="valider la commande" /></li>
                         </form>' 

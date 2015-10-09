@@ -17,7 +17,7 @@ if(isset($_POST['supprimerLCommande'])) {
 }
 
 if (isset($_COOKIE['NumCommande'])) {
-    echo 'commande en cours de traitement : commande n°'.$_COOKIE['NumCommande'].'<br />';
+    echo 'commande en cours de traitement : commande n°'.$_COOKIE['NumCommande'];
 }
 else {
     echo 'aucune commande n\'est en cours de traitement';
@@ -48,7 +48,8 @@ if(isset($_POST['valider']) && !isset($_COOKIE['NumCommande'])) {
 }
 
 if(isset($_POST['valider']) && isset($_COOKIE['NumCommande'])) {         
-            $panier = new Panier();
+            
+           $panier = new Panier();
             if($panier->okStock($_POST['id'])) {
                 
                     $newligneCommande = array ( 'id_Article' => $_POST['id'],
@@ -70,7 +71,6 @@ if(isset($_POST['valider']) && isset($_COOKIE['NumCommande'])) {
 
                     }
             } 
-            
 }
 
 if(isset($_POST['validerCommande']) && isset($_COOKIE['NumCommande'])) {
