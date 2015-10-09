@@ -75,3 +75,18 @@ input[type=number] {
 .pan_article {
     border-bottom: solid 1px white
 }
+
+.red {
+    position: absolute;
+    background-color: #cc0000;
+    color: white;
+    width: 200px;
+    top:20px;
+    right:20px;
+        
+}
+
+#message {
+    margin-left: 40vw;
+    
+}

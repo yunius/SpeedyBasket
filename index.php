@@ -23,7 +23,10 @@ spl_autoload_register('classLoad');
         
           <?php
             include 'vue.php';
-          
+            /*$panier = new Panier();
+            $result = $panier->verifStock(1);
+            echo $result;*/
+                    
             
             
             /*$manager = new Gestion_Commande();

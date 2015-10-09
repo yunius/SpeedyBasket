@@ -2,9 +2,11 @@
 
 if(isset($_POST['updLCommande']) && isset($_POST['qteLCommande'])) {
     $managerU = new Gestion_Ligne_Commande();
+    $panier = new Panier();
     $lignCommAupd = $managerU->getLigneCommande($_COOKIE['NumCommande'], $_POST['idArticle']);
     $lignCommAupd->setQte_Cmde($_POST['qteLCommande']);
-    $managerU->updateLigneCommande($lignCommAupd);
+    $readylignecommande = $panier->verifStock($lignCommAupd);
+    $managerU->updateLigneCommande($readylignecommande);
     header('location:index.php');
 
 }
@@ -17,10 +19,10 @@ if(isset($_POST['supprimerLCommande'])) {
 }
 
 if (isset($_COOKIE['NumCommande'])) {
-    echo 'commande en cours de traitement : commande n°'.$_COOKIE['NumCommande'].'<br />';
+    echo '<div id="message"> commande en cours de traitement : commande n°'.$_COOKIE['NumCommande'].'</div>';
 }
 else {
-    echo 'aucune commande n\'est en cours de traitement';
+    echo '<div id="message"> aucune commande n\'est en cours de traitement</div>';
 }
 
 if(isset($_POST['valider']) && !isset($_COOKIE['NumCommande'])) {
@@ -50,10 +52,10 @@ if(isset($_POST['valider']) && !isset($_COOKIE['NumCommande'])) {
 if(isset($_POST['valider']) && isset($_COOKIE['NumCommande'])) {         
             $panier = new Panier();
             if($panier->okStock($_POST['id'])) {
-                    $cmd_Qte = $panier->verifStock($_POST['id'], $_POST['qte']);
+                    
                     $newligneCommande = array ( 'id_Article' => $_POST['id'],
                                        'id_Commande'=> $_COOKIE['NumCommande'],
-                                       'qte_Cmde'   => $cmd_Qte);
+                                       'qte_Cmde'   => $_POST['qte']);
                     $malignecommande = new Ligne_commande($newligneCommande);
 
                     $managerL = new Gestion_Ligne_Commande();
@@ -62,11 +64,13 @@ if(isset($_POST['valider']) && isset($_COOKIE['NumCommande'])) {
                         $oldQte = $oldlignecommande->getQte_Cmde();
                         $newQte = $oldQte+$_POST['qte'];
                         $oldlignecommande->setQte_Cmde($newQte);
-                        $managerL->updateLigneCommande($oldlignecommande);
-                        echo $panier->okStock($_POST['id']);
+                        $newlignecommande = $panier->verifStock($oldlignecommande);
+                        $managerL->updateLigneCommande($newlignecommande);
+                        
                     }
                     else {
-                    $managerL->addLigneCommande($malignecommande);
+                    $lignecommande = $panier->verifStock($malignecommande);
+                    $managerL->addLigneCommande($lignecommande);
 
                     }
             } 

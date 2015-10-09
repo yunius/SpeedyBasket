@@ -138,6 +138,7 @@ class Panier {
     }
     
     public function updateStock(Ligne_commande $ligne_commande, $qte_Cmde) {
+        
         $id_article = $ligne_commande->getId_Article();
         $managerA = new Gestion_Articles();
         $monArticle = $managerA->getArticle($id_article);
@@ -147,20 +148,20 @@ class Panier {
         $managerA->updateArticle($monArticle);        
     }
     
-    public function verifStock($id_article, $qte_Cmde) {
+    public function verifStock(Ligne_commande $ligneCommande) {
+        
         $managerA = new Gestion_Articles();
+        $qte_Cmde = $ligneCommande->getQte_Cmde();
+        $id_article = $ligneCommande->getId_Article();
         $monArticle = $managerA->getArticle($id_article);
         $qteStock = $monArticle->getA_quantite_stock();
         if ($qte_Cmde > $qteStock) {
             $qte_Cmde = $qteStock;
-            return $qte_Cmde;
+            echo '<div class="red">Stock Insuffisant</div>';            
+            $ligneCommande->setQte_Cmde($qte_Cmde);
         }
-        else {
-            return $qte_Cmde;
-        }
+        return $ligneCommande;
         
-        
-            
     }
  }
         
