@@ -24,8 +24,7 @@ spl_autoload_register('classLoad');
           <?php
             include 'vue.php';
           
-            //$panier = new Panier();
-            //$panier->nbArticleParTVA(12);
+            
             
             /*$manager = new Gestion_Commande();
             $MesCommandes = $manager->getCommmandes();

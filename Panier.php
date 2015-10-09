@@ -129,19 +129,45 @@ class Panier {
                $idTva = $value['id_tva'];
                $taux = $value['t_taux'];
                $nbArticletab = $managerL->countArtByTVA($id_commande, $idTva);
-               $nbarticle = $nbArticletab['nbarticle'];
-               $nbarticle;
+               $nbarticle = $nbArticletab['nbarticle'];               
                $htmlOutPut .='<li>'.$nbarticle.' article(s) à '.$taux.'%</li>';
             }
             
         }
          return $htmlOutPut;      
     }
+    
+    public function updateStock(Ligne_commande $ligne_commande, $qte_Cmde) {
+        $id_article = $ligne_commande->getId_Article();
+        $managerA = new Gestion_Articles();
+        $monArticle = $managerA->getArticle($id_article);
+        $qteStock = $monArticle->getA_quantite_stock();
+        $nveauStock = $qteStock-$qte_Cmde;
+        $monArticle->setA_quantite_stock($nveauStock);
+        $managerA->updateArticle($monArticle);        
+    }
+    
+    public function verifStock($id_article, $qte_Cmde) {
+        $managerA = new Gestion_Articles();
+        $monArticle = $managerA->getArticle($id_article);
+        $qteStock = $monArticle->getA_quantite_stock();
+        if ($qte_Cmde > $qteStock) {
+            $qte_Cmde = $qteStock;
+            return $qte_Cmde;
+        }
+        else {
+            return $qte_Cmde;
+        }
+        
+        
+            
+    }
+ }
         
         
             
 
-}
+
 
     
     

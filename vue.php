@@ -50,10 +50,10 @@ if(isset($_POST['valider']) && !isset($_COOKIE['NumCommande'])) {
 if(isset($_POST['valider']) && isset($_COOKIE['NumCommande'])) {         
             $panier = new Panier();
             if($panier->okStock($_POST['id'])) {
-                
+                    $cmd_Qte = $panier->verifStock($_POST['id'], $_POST['qte']);
                     $newligneCommande = array ( 'id_Article' => $_POST['id'],
                                        'id_Commande'=> $_COOKIE['NumCommande'],
-                                       'qte_Cmde'   => $_POST['qte']);
+                                       'qte_Cmde'   => $cmd_Qte);
                     $malignecommande = new Ligne_commande($newligneCommande);
 
                     $managerL = new Gestion_Ligne_Commande();
