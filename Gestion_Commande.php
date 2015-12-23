@@ -69,4 +69,3 @@ class Gestion_Commande {
     
     
 }
-?>

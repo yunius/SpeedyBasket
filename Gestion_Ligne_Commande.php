@@ -94,7 +94,7 @@ class Gestion_Ligne_Commande {
     
     public function countArtByTVA($id_commande, $id_tva ) {
         $nbArticle = [];
-        $sql = "SELECT COUNT(*) AS nbarticle FROM tb_ligne_commande 
+        $sql = "SELECT SUM(qte_cmde) AS nbarticle FROM tb_ligne_commande 
                 JOIN tb_article ON tb_ligne_commande.id_article=tb_article.id_article 
                 JOIN tb_tva ON tb_tva.id_tva=tb_article.id_tva 
                 WHERE id_commande = ".$id_commande."

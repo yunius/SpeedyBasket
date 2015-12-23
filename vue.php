@@ -79,9 +79,20 @@ if(isset($_POST['valider']) && isset($_COOKIE['NumCommande'])) {
 
 if(isset($_POST['validerCommande']) && isset($_COOKIE['NumCommande'])) {
             $managerC = new Gestion_Commande();
+            $panier = new Panier();
             $commandeAvalider = $managerC->getCommande($_COOKIE['NumCommande']);
             $commandeAvalider->setId_statut(2);
+            $panier->updateStocks($_COOKIE['NumCommande']);
             $managerC->updateCommande($commandeAvalider);
+            setcookie('NumCommande',$_COOKIE['NumCommande'],time(),null, null, false, true);
+            header('location:index.php');
+}
+
+if(isset($_POST['AnnulerCommande']) && isset($_COOKIE['NumCommande'])) {
+            $managerC = new Gestion_Commande();
+            $panier = new Panier();
+            $commandeAannuler = $managerC->getCommande($_COOKIE['NumCommande']);
+            $managerC->deleteCommande($commandeAannuler);
             setcookie('NumCommande',$_COOKIE['NumCommande'],time(),null, null, false, true);
             header('location:index.php');
 }

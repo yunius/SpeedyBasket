@@ -19,7 +19,8 @@ class Panier {
         $tva = $gestionnaire->getTva($article);
         
         //$aPrixTtc = $prixHt*(1+(20.00/100));
-        $aPrixTtc = $prixHt*(1+($tva/100));
+        $aPrixTtc = round($prixHt*(1+($tva/100)), 2, PHP_ROUND_HALF_EVEN);
+        
         
         return $aPrixTtc;
     
@@ -91,10 +92,11 @@ class Panier {
             $qte = $lignecommande->getQte_Cmde();
             $idArticle = $lignecommande->getId_Article();
             $monArticle = $managerA->getArticle($idArticle);
+            $aQteStock = $monArticle->getA_quantite_stock();
             $aPrixTtc = $this->calculTva($monArticle);
             $htmlOutput .= '<form action="" method="post"><li> '.$monArticle->getA_designation().'     prix :'.$aPrixTtc.' € TTC</li><input type="hidden" name="idArticle" value="'.$lignecommande->getId_Article().'" />'
                     . '<input type="hidden" name="idCommande" value="'.$lignecommande->getId_Commande().'" />'
-                    . '<input type="number" name="qteLCommande" value="'.$qte.'" />'
+                    . '<input type="number" name="qteLCommande" value="'.$qte.'" min="1" max="'.$aQteStock.'"  />'
                     . '<input type="submit" name="updLCommande" value="modifier" />'
                     . '<input type="submit" name="supprimerLCommande" value="X" />'
                     . '</form><br />';
@@ -110,7 +112,7 @@ class Panier {
                         <li>------------------------</li>
                         <li>TOTAL TTC : '.$totalTtc.' €</li>
                         <form action="" method="post">
-                        <li><input type="submit" name="validerCommande" value="valider la commande" /></li>
+                        <li><input type="submit" name="validerCommande" value="valider la commande" /><input type="submit" name="AnnulerCommande" value="Annuler la commande" /></li>
                         </form>' 
                         ;
         
@@ -134,7 +136,7 @@ class Panier {
             }
             
         }
-         return $htmlOutPut;      
+        return $htmlOutPut;      
     }
     
     public function updateStock(Ligne_commande $ligne_commande, $qte_Cmde) {
@@ -146,6 +148,15 @@ class Panier {
         $nveauStock = $qteStock-$qte_Cmde;
         $monArticle->setA_quantite_stock($nveauStock);
         $managerA->updateArticle($monArticle);        
+    }
+    
+    public function updateStocks($idcommande) {
+        $managerL = new Gestion_Ligne_Commande();
+        $ligneCommandes = $managerL->getLigneCommandes($idcommande);
+        foreach ($ligneCommandes as $ligneCommande) {
+            $qte_Cmde = $ligneCommande->getQte_Cmde();
+            $this->updateStock($ligneCommande, $qte_Cmde);
+        }
     }
     
     public function verifStock(Ligne_commande $ligneCommande) {
