@@ -42,4 +42,12 @@ class Gestion_Articles {
         $output = $reponse->fetch();
         return $output[0];
     }
+    
+    public function updateArticle(Article $article) {
+        $sql = "UPDATE tb_article SET a_quantite_stock = :a_quantite_stock WHERE id_article = :id_article";
+        $requete = Connect::getInstance()->prepare($sql);
+        $requete->bindValue(':a_quantite_stock', $article->getA_quantite_stock(), PDO::PARAM_INT);
+        $requete->bindValue(':id_article', $article->getId_article(), PDO::PARAM_INT);        
+        $requete->execute();
+    }
 }

@@ -2,9 +2,11 @@
 
 if(isset($_POST['updLCommande']) && isset($_POST['qteLCommande'])) {
     $managerU = new Gestion_Ligne_Commande();
+    $panier = new Panier();
     $lignCommAupd = $managerU->getLigneCommande($_COOKIE['NumCommande'], $_POST['idArticle']);
     $lignCommAupd->setQte_Cmde($_POST['qteLCommande']);
-    $managerU->updateLigneCommande($lignCommAupd);
+    $readylignecommande = $panier->verifStock($lignCommAupd);
+    $managerU->updateLigneCommande($readylignecommande);
     header('location:index.php');
 
 }
@@ -17,10 +19,10 @@ if(isset($_POST['supprimerLCommande'])) {
 }
 
 if (isset($_COOKIE['NumCommande'])) {
-    echo 'commande en cours de traitement : commande n°'.$_COOKIE['NumCommande'].'<br />';
+    echo '<div id="message"> commande en cours de traitement : commande n°'.$_COOKIE['NumCommande'].'</div>';
 }
 else {
-    echo 'aucune commande n\'est en cours de traitement';
+    echo '<div id="message"> aucune commande n\'est en cours de traitement</div>';
 }
 
 if(isset($_POST['valider']) && !isset($_COOKIE['NumCommande'])) {
@@ -50,7 +52,7 @@ if(isset($_POST['valider']) && !isset($_COOKIE['NumCommande'])) {
 if(isset($_POST['valider']) && isset($_COOKIE['NumCommande'])) {         
             $panier = new Panier();
             if($panier->okStock($_POST['id'])) {
-                
+                    
                     $newligneCommande = array ( 'id_Article' => $_POST['id'],
                                        'id_Commande'=> $_COOKIE['NumCommande'],
                                        'qte_Cmde'   => $_POST['qte']);
@@ -62,11 +64,13 @@ if(isset($_POST['valider']) && isset($_COOKIE['NumCommande'])) {
                         $oldQte = $oldlignecommande->getQte_Cmde();
                         $newQte = $oldQte+$_POST['qte'];
                         $oldlignecommande->setQte_Cmde($newQte);
-                        $managerL->updateLigneCommande($oldlignecommande);
-                        echo $panier->okStock($_POST['id']);
+                        $newlignecommande = $panier->verifStock($oldlignecommande);
+                        $managerL->updateLigneCommande($newlignecommande);
+                        
                     }
                     else {
-                    $managerL->addLigneCommande($malignecommande);
+                    $lignecommande = $panier->verifStock($malignecommande);
+                    $managerL->addLigneCommande($lignecommande);
 
                     }
             } 
@@ -75,9 +79,20 @@ if(isset($_POST['valider']) && isset($_COOKIE['NumCommande'])) {
 
 if(isset($_POST['validerCommande']) && isset($_COOKIE['NumCommande'])) {
             $managerC = new Gestion_Commande();
+            $panier = new Panier();
             $commandeAvalider = $managerC->getCommande($_COOKIE['NumCommande']);
             $commandeAvalider->setId_statut(2);
+            $panier->updateStocks($_COOKIE['NumCommande']);
             $managerC->updateCommande($commandeAvalider);
+            setcookie('NumCommande',$_COOKIE['NumCommande'],time(),null, null, false, true);
+            header('location:index.php');
+}
+
+if(isset($_POST['AnnulerCommande']) && isset($_COOKIE['NumCommande'])) {
+            $managerC = new Gestion_Commande();
+            $panier = new Panier();
+            $commandeAannuler = $managerC->getCommande($_COOKIE['NumCommande']);
+            $managerC->deleteCommande($commandeAannuler);
             setcookie('NumCommande',$_COOKIE['NumCommande'],time(),null, null, false, true);
             header('location:index.php');
 }

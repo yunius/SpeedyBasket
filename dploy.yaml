@@ -1,0 +1,9 @@
+live:
+    scheme: ftp
+    host: entropie.ddns.net
+    port: 21
+    user: pi
+    pass: waltdisneym'envoi2501
+    check: true
+    path:
+        remote: var/www

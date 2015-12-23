@@ -15,7 +15,7 @@ class Connect {
     private $PDOinstance = null;
     private static $instance = null;
     const USER = 'root';
-    const PASSWORD = 'root';
+    const PASSWORD = '';
     const HOST = 'localhost';
     const DBNAME = 'db_speedymarket';
     
@@ -43,4 +43,7 @@ class Connect {
         return $this->PDOinstance->exec($exec);
     }
     
+    public function execute($execute) {
+        return $this->PDOinstance->execute($execute);
+    }
 }
