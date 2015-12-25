@@ -108,7 +108,7 @@ if(isset($_POST['AnnulerCommande']) && isset($_COOKIE['NumCommande'])) {
                     <th>prix ttc</th>
                     <th>description</th>
                     <th>categorie</th>
-                    <th>taux tva</th>
+                    <th>taux de tva</th>
             </tr>
             <?php $affichage = new Panier();
             echo $affichage->afficherArticles();
