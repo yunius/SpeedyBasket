@@ -15,7 +15,7 @@ class Connect {
     private $PDOinstance = null;
     private static $instance = null;
     const USER = 'root';
-    const PASSWORD = '';
+    const PASSWORD = '*gilou2501*';
     const HOST = 'localhost';
     const DBNAME = 'db_speedymarket';
     
